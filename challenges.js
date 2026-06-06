@@ -33,4 +33,7 @@ const CHALLENGES = [
   { emoji: "⏱️", title: "Speedgolf", desc: "Maks 8 sekunder fra du plukker opp disken til du kaster – ellers omkast.", drink: false },
   { emoji: "🤾", title: "Hopp-kast", desc: "Begge føtter må være i lufta i det disken slippes. Gjelder også putt.", drink: false },
   { emoji: "🤙", title: "Forehand-fest", desc: "Alle kast må være forehand (flick) hele hullet.", drink: false },
+  { emoji: "👞", title: "Feil fot frem", desc: "Du må stå med «feil» fot fremst på alle kast.", drink: false },
+  { emoji: "📣", title: "Selvskryt", desc: "Annonser deg selv som verdensmester før utkastet – ellers en slurk.", drink: true },
+  { emoji: "📞", title: "Erik ringer Ingrid", desc: "Erik må ringe Ingrid og fortelle hvor dyktig han er i dag med kastingen. Må være genuint – ellers straffedrikk.", drink: true },
 ];
