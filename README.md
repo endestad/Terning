@@ -17,11 +17,14 @@ publiseres helt gratis på GitHub Pages (eller hvilket som helst statisk-hosting
 
 ## 🚀 Publiser gratis på GitHub Pages
 
-1. Push koden til `main`-branchen på GitHub.
-2. Gå til **Settings → Pages** i repoet.
-3. Under **Build and deployment → Source**, velg **GitHub Actions**.
-4. Workflowen i `.github/workflows/deploy.yml` kjører automatisk og publiserer siden.
-5. Etter et minutt ligger appen på `https://<brukernavn>.github.io/<repo>/`.
+1. Gå til **Settings → Pages** i repoet.
+2. Under **Build and deployment → Source**, velg **GitHub Actions**.
+3. Workflowen i `.github/workflows/deploy.yml` kjører automatisk ved hver push til
+   default-branchen og publiserer siden.
+4. Etter et minutt ligger appen på `https://<brukernavn>.github.io/<repo>/`.
+
+> Workflowen trigger på `main` og på `claude/disc-golf-dice-app-WUOdm`. Bytter du
+> default-branch eller branch-navn, oppdater `branches`-lista i deploy-workflowen.
 
 > Du kan også teste lokalt ved å bare åpne `index.html` i nettleseren,
 > eller kjøre `python3 -m http.server` i mappa.

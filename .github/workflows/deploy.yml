@@ -2,7 +2,7 @@ name: Deploy til GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "claude/disc-golf-dice-app-WUOdm"]
   workflow_dispatch:
 
 permissions:
