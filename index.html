@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b6b3a" />
+  <meta name="description" content="Diskgolf-terningen – trill og få en tilfeldig utfordring for neste hull!" />
+  <title>🥏 Diskgolf-terningen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="header">
+      <h1 class="title">🥏 Diskgolf-terningen</h1>
+      <p class="subtitle">Trill terningen før hvert hull – og se hva skjebnen byr på!</p>
+    </header>
+
+    <section class="dice-stage">
+      <div id="card" class="card card--idle" role="status" aria-live="polite">
+        <div class="card__emoji" id="cardEmoji">🎲</div>
+        <div class="card__number" id="cardNumber"></div>
+        <div class="card__title" id="cardTitle">Klar for utfordring?</div>
+        <div class="card__desc" id="cardDesc">Trykk på knappen for å trille terningen.</div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="rollBtn" class="roll-btn" type="button">
+        <span class="roll-btn__dice">🎲</span>
+        <span class="roll-btn__label">Trill terningen</span>
+      </button>
+    </div>
+
+    <section class="options">
+      <label class="toggle">
+        <input type="checkbox" id="drinkToggle" checked />
+        <span class="toggle__track"><span class="toggle__thumb"></span></span>
+        <span class="toggle__text">🍺 Inkluder drikke-utfordringer</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="noRepeatToggle" checked />
+        <span class="toggle__track"><span class="toggle__thumb"></span></span>
+        <span class="toggle__text">🔁 Unngå gjentakelser på rad</span>
+      </label>
+    </section>
+
+    <details class="list-panel">
+      <summary>📜 Se alle utfordringer</summary>
+      <ul id="challengeList" class="challenge-list"></ul>
+    </details>
+
+    <footer class="footer">
+      <p>🥂 Skål for brudgommen! · Laget for gutta · <span id="count"></span> utfordringer</p>
+    </footer>
+  </main>
+
+  <script src="challenges.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
