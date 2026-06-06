@@ -14,26 +14,59 @@
 
   let rolling = false;
   let lastIndex = -1;
+  let rollCount = 0;
+
+  // Planlagte utfordringer (scheduled: true): skal ikke komme på de
+  // SCHED_NOT_BEFORE første trillingene, men garanteres senest på SCHED_GUARANTEE_BY.
+  const SCHED_NOT_BEFORE = 5;
+  const SCHED_GUARANTEE_BY = 12;
+  const schedState = CHALLENGES.filter((c) => c.scheduled).map((c) => ({
+    challenge: c,
+    // Tilfeldig mål-trilling i intervallet [SCHED_NOT_BEFORE + 1, SCHED_GUARANTEE_BY].
+    target: SCHED_NOT_BEFORE + 1 + Math.floor(Math.random() * (SCHED_GUARANTEE_BY - SCHED_NOT_BEFORE)),
+    shown: false,
+  }));
 
   /** Returnerer aktive utfordringer basert på drikke-bryteren. */
   function activePool() {
     return CHALLENGES.filter((c) => drinkToggle.checked || !c.drink);
   }
 
-  /** Trekker en tilfeldig utfordring, evt. uten å gjenta forrige. */
+  /** Trekker en tilfeldig utfordring, med hensyn til planlagte og gjentakelser. */
   function pickChallenge() {
+    rollCount++;
     const pool = activePool();
     if (pool.length === 0) return null;
-    let idx = Math.floor(Math.random() * pool.length);
-    if (noRepeatToggle.checked && pool.length > 1) {
+
+    // 1) Må en planlagt utfordring tvinges frem nå?
+    for (const s of schedState) {
+      if (!s.shown && rollCount >= s.target && pool.includes(s.challenge)) {
+        s.shown = true;
+        lastIndex = CHALLENGES.indexOf(s.challenge);
+        return s.challenge;
+      }
+    }
+
+    // 2) Vanlig trekk. Planlagte utfordringer holdes utenfor de første trillingene.
+    let candidates = pool.filter((c) => {
+      const s = schedState.find((x) => x.challenge === c);
+      return !s || rollCount > SCHED_NOT_BEFORE;
+    });
+    if (candidates.length === 0) candidates = pool;
+
+    let pick = candidates[Math.floor(Math.random() * candidates.length)];
+    if (noRepeatToggle.checked && candidates.length > 1) {
       let guard = 0;
-      while (pool[idx] === CHALLENGES[lastIndex] && guard < 20) {
-        idx = Math.floor(Math.random() * pool.length);
+      while (pick === CHALLENGES[lastIndex] && guard < 20) {
+        pick = candidates[Math.floor(Math.random() * candidates.length)];
         guard++;
       }
     }
-    lastIndex = CHALLENGES.indexOf(pool[idx]);
-    return pool[idx];
+
+    const s = schedState.find((x) => x.challenge === pick);
+    if (s) s.shown = true;
+    lastIndex = CHALLENGES.indexOf(pick);
+    return pick;
   }
 
   function showChallenge(c) {

@@ -6,6 +6,8 @@
  *   title  – kort navn på utfordringen
  *   desc   – forklaring av regelen
  *   drink  – true hvis det er en drikke-utfordring (kan skrus av i appen)
+ *   scheduled – (valgfritt) true = må ikke komme på de 5 første trillingene,
+ *               men garanteres minst én gang i løpet av de 12 første. Per økt.
  */
 const CHALLENGES = [
   { emoji: "🍺", title: "Sip of Shame", desc: "Den som kaster lengst fra kurven på dette hullet drikker en slurk.", drink: true },
@@ -34,6 +36,6 @@ const CHALLENGES = [
   { emoji: "🤾", title: "Hopp-kast", desc: "Begge føtter må være i lufta i det disken slippes. Gjelder også putt.", drink: false },
   { emoji: "🤙", title: "Forehand-fest", desc: "Alle kast må være forehand (flick) hele hullet.", drink: false },
   { emoji: "👞", title: "Feil fot frem", desc: "Du må stå med «feil» fot fremst på alle kast.", drink: false },
-  { emoji: "📣", title: "Selvskryt", desc: "Annonser deg selv som verdensmester før utkastet – ellers en slurk.", drink: true },
-  { emoji: "📞", title: "Erik ringer Ingrid", desc: "Erik må ringe Ingrid og fortelle hvor dyktig han er i dag med kastingen. Må være genuint – ellers straffedrikk.", drink: true },
+  { emoji: "📣", title: "Selvskryt", desc: "Erik må annonsere seg selv som verdensmester før hvert utkast – ellers en slurk.", drink: true },
+  { emoji: "📞", title: "Erik ringer Ingrid", desc: "Erik må ringe Ingrid og fortelle hvor dyktig han er i dag med kastingen. Må være genuint – ellers straffedrikk.", drink: true, scheduled: true },
 ];
