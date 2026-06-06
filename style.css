@@ -201,6 +201,34 @@ body {
 .toggle input:checked + .toggle__track .toggle__thumb { transform: translateX(20px); }
 .toggle input:focus-visible + .toggle__track { outline: 2px solid #fff; outline-offset: 2px; }
 
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  margin-top: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.counter-label { font-size: 0.98rem; }
+.counter-label strong { font-size: 1.1rem; color: var(--gold); }
+.reset-btn {
+  appearance: none;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.22);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background 0.12s, transform 0.12s;
+}
+.reset-btn:hover { background: rgba(0, 0, 0, 0.35); }
+.reset-btn:active { transform: scale(0.96); }
+.reset-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
 /* --- Liste --- */
 .list-panel {
   background: rgba(255, 255, 255, 0.96);

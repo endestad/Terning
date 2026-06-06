@@ -11,25 +11,62 @@
   const noRepeatToggle = document.getElementById("noRepeatToggle");
   const listEl = document.getElementById("challengeList");
   const countEl = document.getElementById("count");
+  const rollCounterEl = document.getElementById("rollCounter");
+  const resetBtn = document.getElementById("resetBtn");
 
   let rolling = false;
   let lastIndex = -1;
   let rollCount = 0;
 
-  // Planlagte utfordringer (scheduled: true): skal ikke komme på de
-  // SCHED_NOT_BEFORE første trillingene, men garanteres senest på SCHED_GUARANTEE_BY.
-  const SCHED_NOT_BEFORE = 5;
-  const SCHED_GUARANTEE_BY = 12;
-  const schedState = CHALLENGES.filter((c) => c.scheduled).map((c) => ({
-    challenge: c,
-    // Tilfeldig mål-trilling i intervallet [SCHED_NOT_BEFORE + 1, SCHED_GUARANTEE_BY].
-    target: SCHED_NOT_BEFORE + 1 + Math.floor(Math.random() * (SCHED_GUARANTEE_BY - SCHED_NOT_BEFORE)),
-    shown: false,
-  }));
+  // Planlagte utfordringer (c.schedule = { notBefore, by }): kommer tidligst etter
+  // `notBefore` trillinger og garanteres senest på trilling `by`.
+  let schedState = [];
+  function buildSchedule() {
+    schedState = CHALLENGES.filter((c) => c.schedule).map((c) => {
+      const notBefore = c.schedule.notBefore || 0;
+      const by = c.schedule.by;
+      return {
+        challenge: c,
+        notBefore: notBefore,
+        by: by,
+        // Tilfeldig mål-trilling i intervallet [notBefore + 1, by].
+        target: notBefore + 1 + Math.floor(Math.random() * (by - notBefore)),
+        shown: false,
+      };
+    });
+  }
+  buildSchedule();
 
   /** Returnerer aktive utfordringer basert på drikke-bryteren. */
   function activePool() {
     return CHALLENGES.filter((c) => drinkToggle.checked || !c.drink);
+  }
+
+  /**
+   * Velger hvilket planlagt kort som evt. må tvinges frem på denne trillingen.
+   * Beregner seneste mulige trilling (latestForce) per kort ut fra fristene, slik
+   * at flere kort med samme frist ikke kolliderer og sklir forbi garantien.
+   */
+  function forcedScheduled(pool) {
+    const pending = schedState
+      .filter((s) => !s.shown && pool.includes(s.challenge))
+      .sort((a, b) => a.by - b.by || a.target - b.target);
+    if (!pending.length) return null;
+
+    // Seneste trilling hvert kort kan tvinges på, regnet bakfra (distinkte trillinger).
+    let nextLatest = Infinity;
+    for (let i = pending.length - 1; i >= 0; i--) {
+      pending[i].latestForce = Math.min(pending[i].by, nextLatest - 1);
+      nextLatest = pending[i].latestForce;
+    }
+
+    // Tvinges hvis vi har nådd kortets tilfeldige mål ELLER dets seneste frist.
+    const due = pending.filter(
+      (s) => rollCount > s.notBefore && rollCount >= Math.min(s.target, s.latestForce)
+    );
+    if (!due.length) return null;
+    due.sort((a, b) => a.latestForce - b.latestForce || a.by - b.by || a.target - b.target);
+    return due[0];
   }
 
   /** Trekker en tilfeldig utfordring, med hensyn til planlagte og gjentakelser. */
@@ -38,19 +75,18 @@
     const pool = activePool();
     if (pool.length === 0) return null;
 
-    // 1) Må en planlagt utfordring tvinges frem nå?
-    for (const s of schedState) {
-      if (!s.shown && rollCount >= s.target && pool.includes(s.challenge)) {
-        s.shown = true;
-        lastIndex = CHALLENGES.indexOf(s.challenge);
-        return s.challenge;
-      }
+    // 1) Må et planlagt kort tvinges frem nå?
+    const forced = forcedScheduled(pool);
+    if (forced) {
+      forced.shown = true;
+      lastIndex = CHALLENGES.indexOf(forced.challenge);
+      return forced.challenge;
     }
 
-    // 2) Vanlig trekk. Planlagte utfordringer holdes utenfor de første trillingene.
+    // 2) Vanlig trekk. Planlagte kort holdes utenfor sitt eget notBefore-vindu.
     let candidates = pool.filter((c) => {
       const s = schedState.find((x) => x.challenge === c);
-      return !s || rollCount > SCHED_NOT_BEFORE;
+      return !s || rollCount > s.notBefore;
     });
     if (candidates.length === 0) candidates = pool;
 
@@ -103,6 +139,7 @@
         card.classList.remove("card--shuffle");
         const result = pickChallenge();
         showChallenge(result);
+        rollCounterEl.textContent = rollCount;
         card.classList.add("card--reveal");
         rolling = false;
         rollBtn.disabled = false;
@@ -126,6 +163,23 @@
     countEl.textContent = CHALLENGES.length;
   }
 
+  /** Nullstiller telleren og planlegger de planlagte kortene på nytt. */
+  function resetCounter() {
+    if (rollCount === 0) return;
+    if (!window.confirm("Resette telleren? Planlagte utfordringer (f.eks. Erik ringer Ingrid) starter på nytt.")) return;
+    rollCount = 0;
+    lastIndex = -1;
+    buildSchedule();
+    rollCounterEl.textContent = "0";
+    cardEmoji.textContent = "🎲";
+    cardNumber.textContent = "";
+    cardTitle.textContent = "Klar for utfordring?";
+    cardDesc.textContent = "Trykk på knappen for å trille terningen.";
+    card.classList.remove("card--drink", "card--reveal");
+    card.classList.add("card--idle");
+  }
+
+  resetBtn.addEventListener("click", resetCounter);
   rollBtn.addEventListener("click", roll);
   document.addEventListener("keydown", (e) => {
     if (e.code === "Space" || e.code === "Enter") {
