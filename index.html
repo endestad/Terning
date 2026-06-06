@@ -58,10 +58,35 @@
       <ul id="challengeList" class="challenge-list"></ul>
     </details>
 
+    <div class="edit-row">
+      <button id="editBtn" class="edit-btn" type="button">✏️ Rediger utfordringer</button>
+    </div>
+
     <footer class="footer">
       <p>🥂 Skål for brudgommen! · Laget for gutta · <span id="count"></span> utfordringer</p>
     </footer>
   </main>
+
+  <div id="editor" class="editor" hidden>
+    <div class="editor__panel" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <header class="editor__head">
+        <h2 id="editorTitle">✏️ Rediger utfordringer</h2>
+        <button id="editorClose" class="editor__close" type="button" aria-label="Lukk">✕</button>
+      </header>
+      <p class="editor__hint">
+        Endre tekst, emoji eller hvem som drikker. Skru av <strong>Vis</strong> for å skjule et kort
+        fra terningen – det slettes ikke, og kan slås på igjen. Endringene lagres kun i denne nettleseren.
+      </p>
+      <div id="editorRows" class="editor__rows"></div>
+      <div class="editor__actions">
+        <button id="editorAdd" class="editor__btn editor__btn--ghost" type="button">➕ Legg til ny</button>
+        <button id="editorReset" class="editor__btn editor__btn--ghost" type="button">↩️ Tilbakestill til standard</button>
+        <span class="editor__spacer"></span>
+        <button id="editorCancel" class="editor__btn editor__btn--ghost" type="button">Avbryt</button>
+        <button id="editorSave" class="editor__btn editor__btn--primary" type="button">💾 Lagre</button>
+      </div>
+    </div>
+  </div>
 
   <script src="challenges.js"></script>
   <script src="app.js"></script>
